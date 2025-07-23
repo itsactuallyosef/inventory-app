@@ -1,0 +1,26 @@
+.container {
+  padding: 16px;
+}
+
+.invoice {
+  margin-bottom: 16px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 10px;
+  background: #fafafa;
+}
+
+.item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 12px;
+  margin-bottom: 6px;
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+}
+
+.item span {
+  flex: 1;
+  text-align: left;
+}
