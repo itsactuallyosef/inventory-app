@@ -25,6 +25,7 @@ app.use(express_1.default.json());
 app.use("/api", products_1.default);
 app.use("/api", invoices_1.default);
 app.use("/api", notifications_1.default);
+app.use("/", express_1.default.static("src/frontend"));
 // 404 fallback
 app.use((req, res) => {
     res.status(404).json({ message: "Not Found" });

@@ -4,10 +4,13 @@ import Product from "../models/product"
 
 
 const getAllInvoices = async (req: Request, res: Response) => {
-    const invoices = await Invoice.find()
-    res.json(invoices)
-}
-
+    try {
+        const invoices = await Invoice.find()
+        res.json(invoices);
+    } catch (err) {
+        res.status(500).json({ message: "Failed to fetch invoices", error: err });
+    }
+};
 const createNewInvoice = async (req: Request, res: Response) => {
   const { items } = req.body;
 
@@ -28,7 +31,6 @@ const createNewInvoice = async (req: Request, res: Response) => {
           message: `Not enough stock for ${product.name}. Available: ${product.quantity}`,
         });
       }
-
       product.quantity -= item.quantity;
       await product.save();
 

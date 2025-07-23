@@ -14,7 +14,7 @@ app.use(express.json());
 app.use("/api", productRoutes);
 app.use("/api", invoiceRoutes);
 app.use("/api", notificationRoutes);
-
+app.use("/", express.static("src/frontend"));
 
 // 404 fallback
 app.use((req, res) => {

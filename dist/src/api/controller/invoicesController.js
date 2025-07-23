@@ -15,8 +15,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const invoice_1 = __importDefault(require("../models/invoice"));
 const product_1 = __importDefault(require("../models/product"));
 const getAllInvoices = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const invoices = yield invoice_1.default.find();
-    res.json(invoices);
+    try {
+        const invoices = yield invoice_1.default.find();
+        res.json(invoices);
+    }
+    catch (err) {
+        res.status(500).json({ message: "Failed to fetch invoices", error: err });
+    }
 });
 const createNewInvoice = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { items } = req.body;
