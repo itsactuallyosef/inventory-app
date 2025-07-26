@@ -9,20 +9,28 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getProducts = exports.getProductById = void 0;
-function getProducts() {
+exports.getInvoices = exports.addToInvoice = void 0;
+function addToInvoice(items) {
     return __awaiter(this, void 0, void 0, function* () {
-        const res = yield fetch("/api/products");
-        return yield res.json();
-    });
-}
-exports.getProducts = getProducts;
-function getProductById(id) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const res = yield fetch(`/api/products/${id}`);
-        if (!res.ok)
-            throw new Error("Failed to fetch product");
+        const res = yield fetch("/api/invoices", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ items }),
+        });
+        if (!res.ok) {
+            const err = yield res.json();
+            throw new Error(err.message || "Failed to create invoice");
+        }
         return res.json();
     });
 }
-exports.getProductById = getProductById;
+exports.addToInvoice = addToInvoice;
+function getInvoices() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const res = yield fetch("/api/invoices");
+        if (!res.ok)
+            throw new Error("Failed to fetch invoices");
+        return res.json();
+    });
+}
+exports.getInvoices = getInvoices;

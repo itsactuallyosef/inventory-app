@@ -32,7 +32,7 @@ function Notifications() {
 
 
   return (
-    
+  
     <div className={styles.container}>
       <NotificationToast message={toastMessage} setMessage={setToastMessage} />
 

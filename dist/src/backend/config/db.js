@@ -8,21 +8,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getProducts = exports.getProductById = void 0;
-function getProducts() {
-    return __awaiter(this, void 0, void 0, function* () {
-        const res = yield fetch("/api/products");
-        return yield res.json();
-    });
-}
-exports.getProducts = getProducts;
-function getProductById(id) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const res = yield fetch(`/api/products/${id}`);
-        if (!res.ok)
-            throw new Error("Failed to fetch product");
-        return res.json();
-    });
-}
-exports.getProductById = getProductById;
+const mongoose_1 = __importDefault(require("mongoose"));
+const connectDB = () => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        yield mongoose_1.default.connect("mongodb://localhost:27017/inventory");
+        console.log("✅ MongoDB connected");
+    }
+    catch (err) {
+        console.error("❌ MongoDB connection failed:", err);
+        process.exit(1);
+    }
+});
+exports.default = { connectDB };

@@ -9,20 +9,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getProducts = exports.getProductById = void 0;
-function getProducts() {
+exports.createNotification = void 0;
+function createNotification(message) {
     return __awaiter(this, void 0, void 0, function* () {
-        const res = yield fetch("/api/products");
-        return yield res.json();
-    });
-}
-exports.getProducts = getProducts;
-function getProductById(id) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const res = yield fetch(`/api/products/${id}`);
-        if (!res.ok)
-            throw new Error("Failed to fetch product");
+        const res = yield fetch("/api/notifications", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message }),
+        });
+        if (!res.ok) {
+            const err = yield res.json();
+            throw new Error(err.message || "Failed to send notification");
+        }
         return res.json();
     });
 }
-exports.getProductById = getProductById;
+exports.createNotification = createNotification;

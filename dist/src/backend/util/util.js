@@ -8,21 +8,22 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getProducts = exports.getProductById = void 0;
-function getProducts() {
+exports.deleteProductById = void 0;
+const product_1 = __importDefault(require("../models/product")); // adjust the path if needed
+function deleteProductById(id) {
     return __awaiter(this, void 0, void 0, function* () {
-        const res = yield fetch("/api/products");
-        return yield res.json();
+        try {
+            const deleted = yield product_1.default.findByIdAndDelete(id);
+            return deleted;
+        }
+        catch (err) {
+            console.error("Error deleting product:", err);
+            throw err;
+        }
     });
 }
-exports.getProducts = getProducts;
-function getProductById(id) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const res = yield fetch(`/api/products/${id}`);
-        if (!res.ok)
-            throw new Error("Failed to fetch product");
-        return res.json();
-    });
-}
-exports.getProductById = getProductById;
+exports.deleteProductById = deleteProductById;

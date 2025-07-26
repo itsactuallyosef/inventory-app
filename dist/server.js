@@ -13,18 +13,20 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const db_1 = __importDefault(require("./src/api/config/db"));
-const products_1 = __importDefault(require("./src/api/routes/products"));
-const invoices_1 = __importDefault(require("./src/api/routes/invoices"));
-const notifications_1 = __importDefault(require("./src/api/routes/notifications"));
+const db_1 = __importDefault(require("./src/backend/config/db"));
+const products_1 = __importDefault(require("./src/backend/routes/products"));
+const invoices_1 = __importDefault(require("./src/backend/routes/invoices"));
+const notifications_1 = __importDefault(require("./src/backend/routes/notifications"));
+const logger_1 = __importDefault(require("./src/backend/middleware/logger"));
 const app = (0, express_1.default)();
 const PORT = 3000;
 // Middleware
 app.use(express_1.default.json());
 // Routes
-app.use("/api", products_1.default);
-app.use("/api", invoices_1.default);
-app.use("/api", notifications_1.default);
+app.use(logger_1.default);
+app.use("/api/", products_1.default);
+app.use("/api/", invoices_1.default);
+app.use("/api/", notifications_1.default);
 app.use("/", express_1.default.static("src/frontend"));
 // 404 fallback
 app.use((req, res) => {

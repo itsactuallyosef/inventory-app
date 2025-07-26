@@ -1,8 +1,9 @@
 import express from "express";
-import DB from "./src/api/config/db";
-import productRoutes from "./src/api/routes/products";
-import invoiceRoutes from "./src/api/routes/invoices";
-import notificationRoutes from "./src/api/routes/notifications";
+import DB from "./src/backend/config/db";
+import productRoutes from "./src/backend/routes/products";
+import invoiceRoutes from "./src/backend/routes/invoices";
+import notificationRoutes from "./src/backend/routes/notifications";
+import logger from "./src/backend/middleware/logger";
 
 const app = express();
 const PORT = 3000;
@@ -11,9 +12,11 @@ const PORT = 3000;
 app.use(express.json());
 
 // Routes
-app.use("/api", productRoutes);
-app.use("/api", invoiceRoutes);
-app.use("/api", notificationRoutes);
+app.use(logger)
+
+app.use("/api/", productRoutes);
+app.use("/api/", invoiceRoutes);
+app.use("/api/", notificationRoutes);
 app.use("/", express.static("src/frontend"));
 
 // 404 fallback
