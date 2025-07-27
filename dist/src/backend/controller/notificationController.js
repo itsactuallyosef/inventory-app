@@ -12,35 +12,49 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const notification_1 = __importDefault(require("../models/notification"));
+exports.removeNotification = exports.createNewNotification = exports.getAllNotification = void 0;
+const notificationSchema_1 = __importDefault(require("../models/notificationSchema"));
+// GET /notifications
 const getAllNotification = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const notification = yield notification_1.default.find().sort({ createdAt: -1 });
-        res.send(notification);
+        const notifications = yield notificationSchema_1.default.find().sort({ createdAt: -1 });
+        res.json(notifications);
     }
-    catch (error) {
-        console.error("Error fetching notifications:", error);
-        res.status(500).json({ message: "Internal server error" });
-    }
-});
-const removeNotification = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
-    try {
-        const deleted = yield notification_1.default.findByIdAndDelete(id);
-        if (!deleted) {
-            return res.status(404).json({ message: "Notification not found" });
-        }
-        res.status(200).json({ message: "Notification deleted successfully" });
-    }
-    catch (error) {
-        console.error("Error deleting notification:", error);
-        res.status(500).json({ message: "Internal server error" });
+    catch (err) {
+        res.status(500).json({ error: "Failed to fetch notifications" });
     }
 });
+exports.getAllNotification = getAllNotification;
+// POST /notifications
 const createNewNotification = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { date, message } = req.body;
-    const notification = new notification_1.default({ date, message });
-    yield notification.save();
-    res.status(201).json(notification);
+    try {
+        const { message, type } = req.body;
+        if (!message) {
+            return res.status(400).json({ error: "Message is required" });
+        }
+        const notification = new notificationSchema_1.default({
+            message,
+            type: type || "info"
+        });
+        yield notification.save();
+        res.status(201).json(notification);
+    }
+    catch (err) {
+        res.status(500).json({ error: "Failed to create notification" });
+    }
 });
-exports.default = { removeNotification, getAllNotification, createNewNotification };
+exports.createNewNotification = createNewNotification;
+// DELETE /notifications/:id
+const removeNotification = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const notification = yield notificationSchema_1.default.findByIdAndDelete(req.params.id);
+        if (!notification) {
+            return res.status(404).json({ error: "Notification not found" });
+        }
+        res.json({ message: "Notification deleted", notification });
+    }
+    catch (err) {
+        res.status(500).json({ error: "Failed to delete notification" });
+    }
+});
+exports.removeNotification = removeNotification;

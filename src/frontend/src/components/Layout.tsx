@@ -1,19 +1,15 @@
-import styles from "../style/Layout.module.css";
-import TopBar from "./TopBar";
 import Sidebar from "./Sidebar";
+import Topbar from "./Topbar";
 
-type Props = {
-  children: React.ReactNode;
-  title: React.ReactNode;
-};
-
-export default function Layout({ children, title }: Props) {
+export default function Layout({ children, title }: { children: React.ReactNode; title: string }) {
   return (
-    <div>
+    <div style={{ display: "flex", height: "100vh" }}>
       <Sidebar />
-      <div className={styles.container} style={{ marginLeft: "60px" }}>
-        <TopBar>{title}</TopBar>
-        {children}
+      <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+        <Topbar title={title} />
+        <div style={{ flex: 1, padding: "1rem", overflowY: "auto", margin: "1rem 1.3rem"}}>
+          {children}
+        </div>
       </div>
     </div>
   );

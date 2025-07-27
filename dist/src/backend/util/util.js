@@ -13,11 +13,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteProductById = void 0;
-const product_1 = __importDefault(require("../models/product")); // adjust the path if needed
+const productSchema_1 = __importDefault(require("../models/productSchema")); // adjust the path if needed
 function deleteProductById(id) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const deleted = yield product_1.default.findByIdAndDelete(id);
+            const deleted = yield productSchema_1.default.findByIdAndDelete(id);
             return deleted;
         }
         catch (err) {

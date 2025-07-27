@@ -1,10 +1,10 @@
 import express from "express";
 
-import invoicesController from "../controller/invoicesController";
+import {getAllInvoices, createNewInvoice} from "../controller/invoicesController";
 
 const router = express.Router();
 
-router.get("/invoices", invoicesController.getAllInvoices)
-router.post("/invoices", invoicesController.createNewInvoice)
+router.get("/invoices", getAllInvoices)
+router.post("/invoices", createNewInvoice)
 
 export default router

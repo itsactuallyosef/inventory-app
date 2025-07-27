@@ -1,32 +1,76 @@
 import { Request, Response } from "express"
-import Product from "../models/product";
-import { deleteProductById } from "../util/util";
+import Product from "../models/productSchema"
 
-const getAllProducts = async (req: Request, res: Response) => {
-    const products = await Product.find();
-    res.json(products);
-}
-
-const createNewProduct = async (req: Request, res: Response) => {
-    const { name, price, quantity } = req.body;
-    const product = new Product({name, price, quantity})
-    await product.save();
-    res.status(201).json(product);
-}
-
-const deleteProduct = async (req: Request, res: Response) => {
+// GET /products
+export const getAllProducts = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
-    const deletedProduct = await deleteProductById(id);
-
-    if (!deletedProduct) {
-      return res.status(404).json({ message: "Product not found" });
-    }
-
-    res.status(200).json({ message: "Product deleted", product: deletedProduct });
+    const products = await Product.find().sort({ createdAt: -1 });
+    res.json(products)
   } catch (err) {
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({ error: "Failed to fetch products" })
   }
 }
 
-export default {getAllProducts, createNewProduct, deleteProduct}
+// POST /products
+export const createNewProduct = async (req: Request, res: Response) => {
+  try {
+    const { name, quantity, price, reorderPoint, category, supplier } = req.body
+
+    if (!name || price == null) {
+      return res.status(400).json({ error: "Name and price are required" })
+    }
+
+
+    const product = new Product({
+      name,
+      quantity: quantity | 0,
+      price,
+      reorderPoint: reorderPoint || 10,
+      category,
+      supplier
+    })
+
+    await product.save()
+
+    res.status(201).json(product)
+  } catch (err) {
+    res.status(500).json({ error: "Failed to create product" })
+  }
+}
+
+// Delete /products/:id
+export const deleteProduct = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params
+    const product = await Product.findByIdAndDelete(id);
+
+    if (!product) {
+      return res.status(404).json({ error: "Product not found" })
+    }
+
+    res.json({ message: "Product deleted", product })
+  } catch (err) {
+    res.status(500).json({ error: "Failed to delete product"})
+  }
+}
+
+// Put /products/:id
+export const updateProduct = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const newFields = req.body;
+
+    const product = await Product.findByIdAndUpdate(id, newFields, {
+      new: true,
+      runValidators: true,
+    })
+
+    if (!product) {
+      return res.status(404).json({ error: "Product not found" })
+    }
+
+    res.json(product)
+  } catch (err) {
+      res.status(500).json({ error: "Failed to update product" })
+  }
+}

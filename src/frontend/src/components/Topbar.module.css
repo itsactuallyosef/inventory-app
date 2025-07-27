@@ -1,0 +1,14 @@
+/* Topbar.module.css */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+  background-color: #fff;
+  border-bottom: 1px solid #eee;
+  height: 40px;
+}
+
+.topbar-title {
+  font-weight: 600;
+}

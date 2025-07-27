@@ -1,19 +1,33 @@
-import { Link } from "react-router-dom";
-import styles from "../style/Sidebar.module.css";
-import { FaBox, FaChartBar, FaBell } from "react-icons/fa";
+import { Link, useLocation } from "react-router-dom"
+import "./Sidebar.css"
 
 export default function Sidebar() {
+  const { pathname } = useLocation()
+
+  const links = [
+    { to: "/", label: "Dashboard" },
+    { to: "/inventory", label: "Inventory" },
+    { to: "/transactions", label: "Transactions" },
+    { to: "/products", label: "Product" },
+    { to: "/invoices", label: "Invoices" },
+  ]
+
   return (
-    <div className={styles.sidebar}>
-      <Link to="/" className={styles["sidebar-icon"]}>
-        <FaBox />
-      </Link>
-      <Link to="/invoices" className={styles["sidebar-icon"]}>
-        <FaChartBar />
-      </Link>
-      <Link to="/notifications" className={styles["sidebar-icon"]}>
-        <FaBell />
-      </Link>
-    </div>
-  );
+    <aside className="sidebar">
+      <nav>
+        <ul>
+          {links.map(({ to, label }) => (
+            <li key={to}>
+              <Link
+                to={to}
+                className={pathname === to ? "active" : ""}
+              >
+                {label}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </aside>
+  )
 }

@@ -14,19 +14,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const db_1 = __importDefault(require("./src/backend/config/db"));
+const dotenv_1 = __importDefault(require("dotenv"));
 const products_1 = __importDefault(require("./src/backend/routes/products"));
 const invoices_1 = __importDefault(require("./src/backend/routes/invoices"));
 const notifications_1 = __importDefault(require("./src/backend/routes/notifications"));
-const logger_1 = __importDefault(require("./src/backend/middleware/logger"));
+const transactions_1 = __importDefault(require("./src/backend/routes/transactions"));
 const app = (0, express_1.default)();
-const PORT = 3000;
+dotenv_1.default.config();
+const PORT = process.env.PORT || 3000;
+const MongoURI = process.env.MONGO_URI || "";
 // Middleware
 app.use(express_1.default.json());
 // Routes
-app.use(logger_1.default);
 app.use("/api/", products_1.default);
 app.use("/api/", invoices_1.default);
 app.use("/api/", notifications_1.default);
+app.use("/api/", transactions_1.default);
 app.use("/", express_1.default.static("src/frontend"));
 // 404 fallback
 app.use((req, res) => {
@@ -34,7 +37,7 @@ app.use((req, res) => {
 });
 // Start server
 const startServer = () => __awaiter(void 0, void 0, void 0, function* () {
-    yield db_1.default.connectDB();
+    yield (0, db_1.default)(MongoURI);
     app.listen(PORT, () => {
         console.log(`Server running on http://localhost:${PORT}`);
     });

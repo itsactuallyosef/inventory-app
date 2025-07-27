@@ -2,11 +2,10 @@
 
 body {
     font-family: "Intel One Mono", monospace;
-    background-color: #f8f8f8;
+    background-color: white;
     margin: 0;
 }
 
 h1 {
-    font-size: 1.5em;
     margin: 10px;
 }

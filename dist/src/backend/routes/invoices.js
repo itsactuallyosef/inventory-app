@@ -4,8 +4,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const invoicesController_1 = __importDefault(require("../controller/invoicesController"));
+const invoicesController_1 = require("../controller/invoicesController");
 const router = express_1.default.Router();
-router.get("/invoices", invoicesController_1.default.getAllInvoices);
-router.post("/invoices", invoicesController_1.default.createNewInvoice);
+router.get("/invoices", invoicesController_1.getAllInvoices);
+router.post("/invoices", invoicesController_1.createNewInvoice);
 exports.default = router;
