@@ -6,8 +6,8 @@ const productSchema = new mongoose.Schema({
   quantity: { type: Number, default: 0 },
   price: { type: Number, required: true },
   reorderPoint: { type: Number, default: 10 }, // optional
-  category: { type: String }, // optional
-  supplier: { type: String }, // optional
+  category: { type: String, default: "Uncategorized" }, // optional
+  supplier: { type: String, default: "Unknown" }, // optional
 }, { timestamps: true })
 
 export default mongoose.model("Product", productSchema)

@@ -10,7 +10,7 @@ const productSchema = new mongoose_1.default.Schema({
     quantity: { type: Number, default: 0 },
     price: { type: Number, required: true },
     reorderPoint: { type: Number, default: 10 },
-    category: { type: String },
-    supplier: { type: String }, // optional
+    category: { type: String, default: "Uncategorized" },
+    supplier: { type: String, default: "Unknown" }, // optional
 }, { timestamps: true });
 exports.default = mongoose_1.default.model("Product", productSchema);
