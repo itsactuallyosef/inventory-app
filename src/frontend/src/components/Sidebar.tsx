@@ -8,7 +8,6 @@ export default function Sidebar() {
     { to: "/", label: "Dashboard" },
     { to: "/inventory", label: "Inventory" },
     { to: "/transactions", label: "Transactions" },
-    { to: "/products", label: "Product" },
     { to: "/invoices", label: "Invoices" },
   ]
 

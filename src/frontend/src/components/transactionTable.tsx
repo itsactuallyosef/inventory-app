@@ -1,9 +1,9 @@
-import type {Transaction} from "../api/transactionsAPI";
+import type {NewTransaction} from "../api/transactionsAPI";
 import styles from "./TransactionTable.module.css";
 
-function TransactionRow({transaction, index}: {transaction: Transaction, index: number}) {
+function TransactionRow({transaction, index}: {transaction: NewTransaction, index: number}) {
     return (
-        <tr key={transaction._id}>
+        <tr key={index}>
             <td>{index+1}</td>
             <td>{transaction.name}</td>
             <td>{new Date(transaction.date).toLocaleDateString()}</td>
@@ -14,7 +14,7 @@ function TransactionRow({transaction, index}: {transaction: Transaction, index: 
     )
 }
 
-export default function TransactionTable({ transactions }: { transactions: Transaction[] }) {
+export default function TransactionTable({ transactions }: { transactions: NewTransaction[] }) {
   return (
     <div className={styles["table-container"]}>
       <table style={{ width: "100%", borderCollapse: "collapse" }} className={styles.table}>

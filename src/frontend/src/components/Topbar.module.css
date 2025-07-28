@@ -1,14 +1,27 @@
-/* Topbar.module.css */
 .topbar {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1rem 2rem;
+  flex-direction: column;
+  padding: 1rem;
+  border-bottom: 1px solid #ccc;
   background-color: #fff;
-  border-bottom: 1px solid #eee;
-  height: 40px;
 }
 
-.topbar-title {
-  font-weight: 600;
+.topbarCentered {
+  text-align: center;
+  padding: 20px;
+}
+
+.title {
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.container {
+  width: 100%;
+  height: 80vh;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }

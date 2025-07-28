@@ -1,5 +1,5 @@
 
-export type Product = {
+export type ProductType = {
   _id: string,
   name: string,
   quantity?: number,
@@ -50,3 +50,5 @@ async function updateProduct(id: string, update: Partial<Product>) {
 }
 
 export default {updateProduct, createProduct, getProductById, getProducts}
+
+export type Product = Omit<ProductType, "_id">;

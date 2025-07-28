@@ -57,7 +57,7 @@ export const deleteProduct = async (req: Request, res: Response) => {
 // Put /products/:id
 export const updateProduct = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
+    const {id} = req.params;
     const newFields = req.body;
 
     const product = await Product.findByIdAndUpdate(id, newFields, {
@@ -70,7 +70,39 @@ export const updateProduct = async (req: Request, res: Response) => {
     }
 
     res.json(product)
+
+
   } catch (err) {
       res.status(500).json({ error: "Failed to update product" })
+
   }
 }
+
+
+
+
+
+
+
+
+
+
+// export const updateProduct = async (req: Request, res: Response) => {
+//   try {
+//     const { id } = req.params;
+//     const newFields = req.body;
+
+//     const product = await Product.findByIdAndUpdate(id, newFields, {
+//       new: true,
+//       runValidators: true,
+//     })
+
+//     if (!product) {
+//       return res.status(404).json({ error: "Product not found" })
+//     }
+
+//     res.json(product)
+//   } catch (err) {
+//       res.status(500).json({ error: "Failed to update product" })
+//   }
+// }

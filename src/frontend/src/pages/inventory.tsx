@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import productsAPI, { type Product } from "../api/productsAPI";
-import Layout from "../components/Layout";
+import Layout from "../layouts/Layout";
 import TableFilters from "../components/TableFilters";
 import ProductsTable from "../components/inventoryTable";
+import Button from "../components/Button";
+import { useNavigate } from "react-router-dom";
 
 export default function Inventory() {
     const [products, setProducts] = useState([]);
@@ -31,9 +33,13 @@ export default function Inventory() {
 
         setFiltered(filtered);
     }    
+    const navigate = useNavigate();
+
 
     return (
-        <Layout title="Inventory">
+        <Layout title="Inventory" button={<Button onClick={() => {
+            navigate("/products/new")
+        }}>Add product</Button>}>
            <TableFilters
                 fields={[
                     {

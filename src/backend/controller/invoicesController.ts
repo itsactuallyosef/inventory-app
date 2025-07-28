@@ -1,8 +1,8 @@
+import mongoose from "mongoose"
 import Invoice from "../models/invoiceSchema"
 import Product from "../models/productSchema"
 import Transaction from "../models/transactionSchema"
 import Notification from "../models/notificationSchema"
-
 import { Request, Response } from "express"
 
 // GET /invoices
@@ -15,6 +15,7 @@ export const getAllInvoices = async (req: Request, res: Response) => {
   }
 }
 
+// POST /invoices
 export const createNewInvoice = async (req: Request, res: Response) => {
   try {
     const { items } = req.body
@@ -24,64 +25,46 @@ export const createNewInvoice = async (req: Request, res: Response) => {
     }
 
     let total = 0
-    const session = await Product.startSession()
-    session.startTransaction()
 
-    try {
-      // Loop through items and update product stock
-      for (const item of items) {
-        const { productId, quantity } = item
-        if (!productId || quantity <= 0) throw new Error("Invalid item")
-
-        const product = await Product.findById(productId).session(session)
-        if (!product) throw new Error("Product not found")
-
-        if (product.quantity < quantity) {
-          throw new Error(`Not enough stock for ${product.name}`)
-        }
-
-        product.quantity -= quantity
-        total += quantity * product.price
-        await product.save()
-
-        // Create out-transaction
-        await Transaction.create([{
-          productId,
-          type: "out",
-          quantity,
-          reason: "invoice"
-        }], { session })
-
-        // Low stock notification
-        if (product.quantity <= product.reorderPoint) {
-          await Notification.create([{
-            message: `${product.name} is low on stock.`,
-            type: "warning"
-          }], { session })
-        }
-
-        // Attach price at time of sale
-        item.price = product.price
+    for (const item of items) {
+      let { productId, quantity } = item
+      if (!productId || quantity <= 0) {
+        return res.status(400).json({ error: "Invalid item in invoice" })
       }
 
-      // Save invoice
-      const invoice = await Invoice.create([{
-        items,
-        total
-      }], { session })
+      // ensure ObjectId
+      const product = await Product.findById(productId)
+      if (!product) {
+        return res.status(404).json({ error: "Product not found" })
+      }
 
-      await session.commitTransaction()
-      session.endSession()
+      if (product.quantity < quantity) {
+        return res.status(400).json({ error: `Not enough stock for ${product.name}` })
+      }
 
-      res.status(201).json(invoice[0])
+      product.quantity -= quantity
+      await product.save()
 
-    } catch (err) {
-      await session.abortTransaction()
-      session.endSession()
-      res.status(400).json({ error: err || "Invoice creation failed" })
+      total += quantity * product.price
+      item.price = product.price // attach price at time of sale
+
+      // create low stock notification if needed
+      if (product.quantity <= product.reorderPoint) {
+        await Notification.create({
+          message: `${product.name} is low on stock.`,
+          type: "warning"
+        })
+      }
     }
 
+    const invoice = await Invoice.create({
+      items,
+      total
+    })
+
+    res.status(201).json(invoice)
   } catch (err) {
+    console.error(err)
     res.status(500).json({ error: "Server error" })
   }
 }

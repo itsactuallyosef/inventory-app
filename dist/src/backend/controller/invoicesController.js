@@ -15,7 +15,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.createNewInvoice = exports.getAllInvoices = void 0;
 const invoiceSchema_1 = __importDefault(require("../models/invoiceSchema"));
 const productSchema_1 = __importDefault(require("../models/productSchema"));
-const transactionSchema_1 = __importDefault(require("../models/transactionSchema"));
 const notificationSchema_1 = __importDefault(require("../models/notificationSchema"));
 // GET /invoices
 const getAllInvoices = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -28,6 +27,7 @@ const getAllInvoices = (req, res) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 exports.getAllInvoices = getAllInvoices;
+// POST /invoices
 const createNewInvoice = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { items } = req.body;
@@ -35,56 +35,39 @@ const createNewInvoice = (req, res) => __awaiter(void 0, void 0, void 0, functio
             return res.status(400).json({ error: "Invoice must contain at least one item" });
         }
         let total = 0;
-        const session = yield productSchema_1.default.startSession();
-        session.startTransaction();
-        try {
-            // Loop through items and update product stock
-            for (const item of items) {
-                const { productId, quantity } = item;
-                if (!productId || quantity <= 0)
-                    throw new Error("Invalid item");
-                const product = yield productSchema_1.default.findById(productId).session(session);
-                if (!product)
-                    throw new Error("Product not found");
-                if (product.quantity < quantity) {
-                    throw new Error(`Not enough stock for ${product.name}`);
-                }
-                product.quantity -= quantity;
-                total += quantity * product.price;
-                yield product.save();
-                // Create out-transaction
-                yield transactionSchema_1.default.create([{
-                        productId,
-                        type: "out",
-                        quantity,
-                        reason: "invoice"
-                    }], { session });
-                // Low stock notification
-                if (product.quantity <= product.reorderPoint) {
-                    yield notificationSchema_1.default.create([{
-                            message: `${product.name} is low on stock.`,
-                            type: "warning"
-                        }], { session });
-                }
-                // Attach price at time of sale
-                item.price = product.price;
+        for (const item of items) {
+            let { productId, quantity } = item;
+            if (!productId || quantity <= 0) {
+                return res.status(400).json({ error: "Invalid item in invoice" });
             }
-            // Save invoice
-            const invoice = yield invoiceSchema_1.default.create([{
-                    items,
-                    total
-                }], { session });
-            yield session.commitTransaction();
-            session.endSession();
-            res.status(201).json(invoice[0]);
+            // ensure ObjectId
+            const product = yield productSchema_1.default.findById(productId);
+            if (!product) {
+                return res.status(404).json({ error: "Product not found" });
+            }
+            if (product.quantity < quantity) {
+                return res.status(400).json({ error: `Not enough stock for ${product.name}` });
+            }
+            product.quantity -= quantity;
+            yield product.save();
+            total += quantity * product.price;
+            item.price = product.price; // attach price at time of sale
+            // create low stock notification if needed
+            if (product.quantity <= product.reorderPoint) {
+                yield notificationSchema_1.default.create({
+                    message: `${product.name} is low on stock.`,
+                    type: "warning"
+                });
+            }
         }
-        catch (err) {
-            yield session.abortTransaction();
-            session.endSession();
-            res.status(400).json({ error: err || "Invoice creation failed" });
-        }
+        const invoice = yield invoiceSchema_1.default.create({
+            items,
+            total
+        });
+        res.status(201).json(invoice);
     }
     catch (err) {
+        console.error(err);
         res.status(500).json({ error: "Server error" });
     }
 });

@@ -11,6 +11,7 @@ const invoiceSchema = new mongoose.Schema({
     }
   ],
   total: Number,
+  date: { type: String, default: () => new Date().toISOString() }
 }, { timestamps: true })
 
 export default mongoose.model("Invoice", invoiceSchema)
