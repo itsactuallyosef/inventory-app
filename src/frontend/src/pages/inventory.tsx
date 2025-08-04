@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import productsAPI, { type Product } from "../api/productsAPI";
+import productsAPI from "../api/productsAPI";
+import type { Product } from "../types/Product";
 import Layout from "../layouts/Layout";
 import TableFilters from "../components/TableFilters";
 import ProductsTable from "../components/inventoryTable";
@@ -15,7 +16,6 @@ export default function Inventory() {
       setProducts(p);
       setFiltered(p); // initially show all
     }
-
 
     useEffect(()=>{
         fetchAll();

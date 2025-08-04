@@ -1,12 +1,12 @@
-import type {NewTransaction} from "../api/transactionsAPI";
-import styles from "./TransactionTable.module.css";
+import type {NewTransaction} from "../types/Transaction";
+import styles from "./Table.module.css";
 
 function TransactionRow({transaction, index}: {transaction: NewTransaction, index: number}) {
     return (
         <tr key={index}>
             <td>{index+1}</td>
             <td>{transaction.name}</td>
-            <td>{new Date(transaction.date).toLocaleDateString()}</td>
+            <td>{new Date().toLocaleDateString()}</td>
             <td className={styles[transaction.type]}>{transaction.type}</td>
             <td>{transaction.quantity}</td>
             <td>{transaction.reason}</td>

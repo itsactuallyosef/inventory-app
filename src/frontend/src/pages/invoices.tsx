@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import invoicesAPI, { type Invoice } from "../api/invoicesAPI";
+import invoicesAPI from "../api/invoicesAPI";
+import { type Invoice } from "../types/Invoice"; 
 import Layout from "../layouts/Layout";
 import InvoicesTable from "../components/InvoicesTable";
 

@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createNewInvoice = exports.getAllInvoices = void 0;
+exports.getInvoiceByID = exports.createNewInvoice = exports.getAllInvoices = void 0;
 const invoiceSchema_1 = __importDefault(require("../models/invoiceSchema"));
 const productSchema_1 = __importDefault(require("../models/productSchema"));
 const notificationSchema_1 = __importDefault(require("../models/notificationSchema"));
@@ -72,3 +72,16 @@ const createNewInvoice = (req, res) => __awaiter(void 0, void 0, void 0, functio
     }
 });
 exports.createNewInvoice = createNewInvoice;
+const getInvoiceByID = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const invoice = yield invoiceSchema_1.default.findById(req.params.id);
+        if (!invoice)
+            return res.status(404).json({ error: "Invoice not found" });
+        res.json(invoice);
+    }
+    catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to fetch invoice" });
+    }
+});
+exports.getInvoiceByID = getInvoiceByID;

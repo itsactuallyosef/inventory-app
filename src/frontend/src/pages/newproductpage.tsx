@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import productsAPI from "../api/productsAPI";
 import ModalLayout from "../layouts/modelLayout";
-import styles from "../style/NewProductModal.module.css"
+import styles from "../style/Modal.module.css"
 
 export default function NewProductPage() {
   const [form, setForm] = useState({

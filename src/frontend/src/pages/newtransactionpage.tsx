@@ -1,152 +1,155 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import Layout from "../layouts/Layout";
+import productsAPI from "../api/productsAPI";
 import transactionsAPI from "../api/transactionsAPI";
-import productsAPI, { type ProductType } from "../api/productsAPI";
-import ModalLayout from "../layouts/modelLayout";
-import styles from "../style/NewProductModal.module.css";
-import invoicesAPI, { type NewInvoice } from "../api/invoicesAPI";
+import type { Product } from "../types/Product";
+import Button from "../components/Button"
+import styles from "../components/Table.module.css";
+import invoicesAPI from "../api/invoicesAPI";
 
-type NewTransaction = {
-  type: "in" | "out";
-  name: string;
-  productId: string;
-  quantity: number;
-  date: string;
-  reason: string;
-};
 
 export default function NewTransactionPage() {
-  const [form, setForm] = useState<NewTransaction>({
-    type: "in",
-    productId: "",
-    name: "",
-    quantity: 0,
-    date: new Date().toISOString().slice(0, 10),
-    reason: "",
-  });
+  const [products, setProducts] = useState<(Product & {
+    type?: "in" | "out" | "-";
+    txQuantity?: number;
+    reason?: string;
+  })[]>([]);
 
-  const [products, setProducts] = useState<ProductType[]>([]);
-  const [error, setError] = useState("");
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    productsAPI.getProducts()
-      .then(setProducts)
-      .catch(() => setError("Failed to load products."));
-  }, []);
-
-  function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) {
-    const { name, value } = e.target;
-    setForm((prev) => ({
-      ...prev,
-      [name]: name === "quantity" ? Math.max(parseInt(value), 0) : value,
-    }));
+  async function fetchProducts() {
+    try {
+      const res = await productsAPI.getProducts();
+      const productsWithInputs = res.map((p: Product) => ({
+        ...p,
+        type: "-",
+        txQuantity: 0,
+        reason: "",
+      }));
+      setProducts(productsWithInputs);
+    } catch (err) {
+      console.error("Failed to fetch products", err);
+    }
   }
 
-    async function handleSubmit(e: React.FormEvent) {
-  e.preventDefault();
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  function handleChange(id: string, field: "type" | "txQuantity" | "reason", value: string) {
+    setProducts(prev =>
+      prev.map(p =>
+        p._id === id
+          ? {
+              ...p,
+              [field]: field === "txQuantity" ? Number(value) : value,
+            }
+          : p
+      )
+    );
+  }
+
+  async function handleSubmit() {
+  const toSubmit = products.filter(p => p.type !== "-" && p.txQuantity! > 0);
+
+  const txs = toSubmit.map(p => ({
+    productId: p._id,
+    type: p.type as "in" | "out",
+    quantity: p.txQuantity!,
+    reason: p.reason!,
+    name: p.name,
+  }));
+
+  const invoiceItems = toSubmit.map(p => ({
+    productId: p._id,
+    quantity: p.txQuantity!,
+    price: p.price, // assumes `p.price` exists; otherwise fix this
+    name: p.name,
+  }));
+
+  const total = invoiceItems.reduce((acc, item) => acc + item.quantity * item.price, 0);
+
   try {
-    const selectedProduct = products.find(p => p._id === form.productId);
-    if (!selectedProduct) throw new Error("Invalid product selected");
-
-    // Step 1: create the transaction
-    await transactionsAPI.createTransaction({
-      ...form,
-      name: selectedProduct.name,
-    });
-
-    // Step 2: if it's an "out" transaction, also create an invoice
-    if (form.type === "out") {
-      const invoice: NewInvoice = {
-        items: [
-          {
-            productId: form.productId,
-            quantity: form.quantity,
-            price: selectedProduct.price ?? 0, // fallback if no price field
-            name: selectedProduct.name,
-          }
-        ],
-        total: (selectedProduct.price ?? 0) * form.quantity,
-      };
-
-      await invoicesAPI.createInvoice(invoice);
+    // First: submit all transactions one-by-one
+    for (const tx of txs) {
+      await transactionsAPI.createTransaction(tx);
     }
 
-    navigate("/transactions");
+    // Then: create invoice
+    await invoicesAPI.createInvoice({
+      items: invoiceItems,
+      total,
+    });
+
+    alert("Transactions and invoice submitted.");
   } catch (err) {
-    console.error("Transaction creation failed:", err);
-    setError("Failed to create transaction.");
+    console.error("Submission failed", err);
+    alert("Something went wrong.");
   }
 }
 
   return (
-    <ModalLayout title="Create New Transaction">
-      <form onSubmit={handleSubmit} className={styles.form}>
-        <div className={styles.field}>
-          <label htmlFor="type">Type</label>
-          <select id="type" name="type" value={form.type} onChange={handleChange}>
-            <option value="in">In</option>
-            <option value="out">Out</option>
-          </select>
-        </div>
+    <Layout title="Create New Transaction" button>
+      <div className={styles["table-container"]}>
+        <table className={styles.table}>
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Category</th>
+              <th>Current Qty</th>
+              <th>Type</th>
+              <th>Qty</th>
+              <th>Reason</th>
+            </tr>
+          </thead>
+          <tbody>
+            {products.length === 0 ? (
+              <tr>
+                <td colSpan={6} className={styles["empty-row"]}>
+                  No products available.
+                </td>
+              </tr>
+            ) : (
+              products.map(p => (
+                <tr key={p._id}>
+                  <td>{p.name}</td>
+                  <td>{p.category || "-"}</td>
+                  <td>{p.quantity ?? 0}</td>
+                  <td>
+                    <select
+                      className={styles[p.type || ""]}
+                      value={p.type}
+                      onChange={e => handleChange(p._id, "type", e.target.value)}
+                    >
+                      <option value="-">-</option>
+                      <option value="in">In</option>
+                      <option value="out">Out</option>
+                    </select>
+                  </td>
+                  <td>
+                    <input
+                      type="number"
+                      min="0"
+                      value={p.txQuantity ?? 0}
+                      onChange={e => handleChange(p._id, "txQuantity", e.target.value)}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="text"
+                      placeholder="Reason"
+                      value={p.reason ?? ""}
+                      onChange={e => handleChange(p._id, "reason", e.target.value)}
+                    />
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+        
+      </div>
 
-        <div className={styles.field}>
-          <label htmlFor="productId">Product</label>
-          <select id="productId" name="productId" value={form.productId} onChange={handleChange} required>
-            <option value="">Select a product</option>
-            {products.map((product: ProductType) => (
-              <option key={product._id} value={product._id}>
-                {product.name}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className={styles.field}>
-          <label htmlFor="quantity">Quantity</label>
-          <input
-            id="quantity"
-            name="quantity"
-            type="number"
-            value={form.quantity}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        <div className={styles.field}>
-          <label htmlFor="date">Date</label>
-          <input
-            id="date"
-            name="date"
-            type="date"
-            value={form.date}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        <div className={styles.field}>
-          <label htmlFor="reason">Note</label>
-          <textarea
-            id="reason"
-            name="reason"
-            value={form.reason}
-            onChange={handleChange}
-            rows={3}
-            style={{ resize: "none", height: "30px" }}
-          />
-        </div>
-
-        {error && <p className={styles.error}>{error}</p>}
-
-        <div className={styles.actions}>
-          <button type="submit" className={styles.submit}>Add Transaction</button>
-          <button type="button" onClick={() => navigate("/transactions")} className={styles.cancel}>
-            Cancel
-          </button>
-        </div>
-      </form>
-    </ModalLayout>
+      {/* <button className={styles.actionbutton} onClick={handleSubmit}>Submit</button> */}
+      <Button onClick={handleSubmit}>Submit</Button>
+    </Layout>
   );
 }

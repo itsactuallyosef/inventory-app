@@ -1,13 +1,4 @@
-
-export type ProductType = {
-  _id: string,
-  name: string,
-  quantity?: number,
-  price: number,
-  reorderPoint?: number,
-  category?: string,
-  supplier?: string,
-}
+import type { Product } from "../types/Product";
 
 const BASE_URL = "/api/products";
 
@@ -51,4 +42,4 @@ async function updateProduct(id: string, update: Partial<Product>) {
 
 export default {updateProduct, createProduct, getProductById, getProducts}
 
-export type Product = Omit<ProductType, "_id">;
+export type ProductNew = Omit<Product, "_id">;

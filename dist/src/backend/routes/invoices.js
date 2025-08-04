@@ -8,4 +8,5 @@ const invoicesController_1 = require("../controller/invoicesController");
 const router = express_1.default.Router();
 router.get("/invoices", invoicesController_1.getAllInvoices);
 router.post("/invoices", invoicesController_1.createNewInvoice);
+router.get("/invoices/:id", invoicesController_1.getInvoiceByID);
 exports.default = router;

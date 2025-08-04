@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Layout from "../layouts/Layout";
-import type { NewTransaction } from "../api/transactionsAPI";
+import type { NewTransaction } from "../types/Transaction";
 import FilterBar from "../components/TableFilters";
 import TransactionTable from "../components/transactionTable";
 import transactionsAPI from "../api/transactionsAPI";

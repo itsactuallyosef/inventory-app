@@ -1,19 +1,27 @@
-import type { Invoice } from "../api/invoicesAPI";
-import styles from "./TransactionTable.module.css";
+import type { Invoice } from "../types/Invoice";
+import styles from "./Table.module.css";
+import { useNavigate } from "react-router-dom";
 
-function InvoicesRow({invoice, index}: {invoice: Invoice, index: number}) {
-    return (
-        <tr key={index}>
-            <td>{index+1}</td>
-            <td>{new Date(invoice.createdAt).toLocaleDateString()}</td>
-            <td>{invoice.items[0].name}</td>
-            <td>{invoice.items[0].price}</td>
-            <td>{invoice.items[0].quantity}</td>
-            <td>{invoice.total}</td>
-        </tr>
-    )
+function InvoicesRow({ invoice, index }: { invoice: Invoice; index: number }) {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate(`/invoices/${invoice._id}`);
+  };
+
+  return (
+    <tr
+      key={index}
+      onClick={handleClick}
+      style={{ cursor: "pointer" }}
+    >
+      <td>{index + 1}</td>
+      <td>{new Date(invoice.createdAt).toLocaleDateString()}</td>
+      <td>{invoice.items.length}</td>
+      <td>{invoice.total}</td>
+    </tr>
+  );
 }
-
 export default function InvoicesTable({ invoices }: { invoices: Invoice[] }) {
   return (
     <div className={styles["table-container"]}>
@@ -22,9 +30,7 @@ export default function InvoicesTable({ invoices }: { invoices: Invoice[] }) {
           <tr>
             <th>#</th>
             <th>Date</th>
-            <th>Product Name</th>
-            <th>Unit Price</th>
-            <th>Quantity</th>
+            <th>Products Number</th>
             <th>Total Price</th>
           </tr>
         </thead>

@@ -5,10 +5,10 @@ import Layout from "../layouts/Layout";
 import styles from "../style/dashboard.module.css"
 import { FaBox, FaExclamationTriangle, FaReceipt } from "react-icons/fa";
 import TransactionTable from "../components/transactionTable";
-import transactionsAPI, { type Transaction } from "../api/transactionsAPI";
+import transactionsAPI from "../api/transactionsAPI";
 import type { Invoice } from "../api/invoicesAPI";
 import invoicesAPI from "../api/invoicesAPI";
-
+import type { Transaction } from "../types/Transaction";
 
 export default function Dashboard() {
   const [productsNumber, setProductsNumber] = useState<number | string>(0)

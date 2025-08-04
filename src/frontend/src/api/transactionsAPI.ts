@@ -1,18 +1,9 @@
+import type { NewTransaction, Transaction } from "../types/Transaction"
+
 const BASE_URL = "/api/transactions/";
 
-// The full object returned from backend
-export type Transaction = {
-  _id: string;
-  date: string;
-  type: "in" | "out";
-  productId: string;
-  name: string;
-  quantity: number;
-  reason: string;
-};
 
 // The object you send when creating a transaction
-export type NewTransaction = Omit<Transaction, "_id">;
 
 async function getTransactions(): Promise<Transaction[]> {
   const res = await fetch(BASE_URL);

@@ -1,19 +1,5 @@
 // src/api/invoicesAPI.ts
-
-export type InvoiceItem = {
-  productId: string;
-  quantity: number;
-  price: number;
-  name: string;
-};
-
-export type Invoice = {
-  _id: string;
-  items: InvoiceItem[];
-  total: number;
-  createdAt: string;
-  updatedAt: string;
-};
+import type { Invoice } from "../types/Invoice";
 
 export type NewInvoice = Omit<Invoice, "_id" | "createdAt" | "updatedAt">;
 

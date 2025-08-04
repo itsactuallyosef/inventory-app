@@ -1,14 +1,16 @@
 .container {
   height: 100vh;
   background-color: #007bff;
+  display: flex;
+  justify-content: space-evenly;
 }
 
 .form {
   display: grid;
-  gap: 2rem;
-  grid-template-columns: 300px 300px;
+  gap: 1rem;
+  grid-template-columns: 300px;
   padding: 5rem 3rem;
-  border: 1px solid gray;
+  border: 1px solid rgba(128, 128, 128, 0.212);
   border-radius: 15px;
   font-family: monospace;
 }

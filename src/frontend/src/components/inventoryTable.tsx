@@ -1,20 +1,61 @@
-import styles from "./TransactionTable.module.css";
-import type {Product} from "../api/productsAPI"
+import styles from "./Table.module.css";
+import type { Product } from "../types/Product"
+import { useState } from "react";
 
-function ProductRow({product, index}: {product: Product, index: number}) {
-    return (
-        <tr key={product._id}>
-            <td>{index+1}</td>
-            <td>{product.name}</td>
-            <td>{product.quantity}</td>
-            <td>{product.price}</td>
-            <td>{product.category}</td>
-            <td>{product.supplier}</td>
-        </tr>
-    )
+function ProductRow({
+  product,
+  index,
+  onDelete,
+}: {
+  product: Product;
+  index: number;
+  onDelete: (id: string) => void;
+}) {
+  return (
+    <tr>
+      <td>{index + 1}</td>
+      <td>{product.name}</td>
+      <td>{product.quantity}</td>
+      <td>{product.price}</td>
+      <td>{product.category}</td>
+      <td>{product.supplier}</td>
+      <td>
+        <button
+          style={{
+            background: "#ff4d4f",
+            color: "white",
+            border: "none",
+            padding: "4px 8px",
+            borderRadius: "4px",
+            cursor: "pointer",
+          }}
+          onClick={() => onDelete(product._id)}
+        >
+          Delete
+        </button>
+      </td>
+    </tr>
+  );
 }
 
 export default function ProductsTable({ products }: { products: Product[] }) {
+  const [productList, setProductList] = useState<Product[]>(products);
+
+
+  const handleDelete = async (id: string) => {
+    const confirm = window.confirm("Are you sure you want to delete this product?");
+    if (!confirm) return;
+
+    try {
+      const res = await fetch(`/api/products/${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error("Failed to delete product");
+      setProductList((prev) => prev.filter((p: Product) => p._id !== id));
+    } catch (err) {
+      console.error(err);
+      alert("Failed to delete product.");
+    }
+  };
+
   return (
     <div className={styles["table-container"]}>
       <table style={{ width: "100%", borderCollapse: "collapse" }} className={styles.table}>
@@ -26,6 +67,7 @@ export default function ProductsTable({ products }: { products: Product[] }) {
             <th>Price</th>
             <th>Category</th>
             <th>Supplier</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
@@ -36,7 +78,7 @@ export default function ProductsTable({ products }: { products: Product[] }) {
               </td>
             </tr>
           ) : products.map((product, i) => (
-            <ProductRow product={product} index={i}/>
+            <ProductRow key={product._id} product={product} index={i} onDelete={handleDelete} />
           ))}
         </tbody>
       </table>
