@@ -1,9 +1,10 @@
+
+
 .topbar {
   display: flex;
   flex-direction: column;
-  padding: 1rem;
-  border-bottom: 1px solid #ccc;
-  background-color: #fff;
+  justify-content: center;
+  margin: 30px 0;
 }
 
 .topbarCentered {
@@ -12,8 +13,9 @@
 }
 
 .title {
-  font-size: 1.1rem;
+  font-size: 1.3rem;
   margin: 0;
+  color: var(--topbar-title);
 }
 
 .container {

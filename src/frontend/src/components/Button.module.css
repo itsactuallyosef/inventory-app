@@ -1,19 +1,33 @@
 .button {
-  padding: 0.5rem 1rem;
-  background-color: #4f46e5; /* indigo-600 */
-  color: white;
+  font-family: inherit;
+  font-size: 14px;
+  padding: 8px 16px;
+  border-radius: 6px;
   border: none;
-  border-radius: 4px;
-  font-size: 0.95rem;
   cursor: pointer;
-  transition: background-color 0.2s ease;
 }
 
-.button:hover {
-  background-color: #4338ca; /* indigo-700 */
+/* Variants */
+.primary {
+  background-color: var(--btn-bg-color);
+  color: var(--btn-font-color);
+}
+.primary:hover {
+  background-color: var(--btn-bg-color-hover);
 }
 
-.button:disabled {
-  background-color: #9ca3af; /* gray-400 */
-  cursor: not-allowed;
+.secondary {
+  background-color: #e5e5e5;
+  color: black;
+}
+.secondary:hover {
+  background-color: #d5d5d5;
+}
+
+.danger {
+  background-color: #f54848;
+  color: white;
+}
+.danger:hover {
+  background-color: #d63c3c;
 }

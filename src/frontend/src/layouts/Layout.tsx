@@ -5,9 +5,9 @@ export default function Layout({ children, title, button }: { children: React.Re
   return (
     <div style={{ display: "flex", height: "100vh"}}>
       <Sidebar />
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", width: "100%" }}>
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", width: "100%", margin: "20px" }}>
         <Topbar title={title} button={button}/>
-        <div style={{ flex: 1, padding: "1rem", overflowY: "auto", margin: "1rem 1.3rem"}}>
+        <div style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column"}}>
           {children}
         </div>
       </div>

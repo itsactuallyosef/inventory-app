@@ -1,3 +1,4 @@
+
 .filters {
   display: flex;
   gap: 1rem;
@@ -9,16 +10,17 @@
 .select,
 .input {
   padding: 0.5rem 0.75rem;
-  border: 1px solid #ccc;
+  border: 1px solid var(--filter-border);
   border-radius: 6px;
   font-size: 0.95rem;
-  background-color: #fff;
+  background-color: var(--filter-bg);
+  color: white;
 }
 
 .button {
   padding: 0.5rem 1rem;
-  background-color: #3b82f6;
-  color: white;
+  background-color: var(--filter-apply-btn-bg);
+  color: var(--filter-apply-btn-color);
   border: none;
   border-radius: 6px;
   font-weight: 500;
@@ -27,5 +29,5 @@
 }
 
 .button:hover {
-  background-color: #2563eb;
+  background-color: var(--filter-apply-btn-hover);
 }

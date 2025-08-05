@@ -1,6 +1,6 @@
+
 .container {
   height: 100vh;
-  background-color: #007bff;
   display: flex;
   justify-content: space-evenly;
 }
@@ -10,14 +10,12 @@
   gap: 1rem;
   grid-template-columns: 300px;
   padding: 5rem 3rem;
-  border: 1px solid rgba(128, 128, 128, 0.212);
+  border: var(--form-border);
   border-radius: 15px;
-  font-family: monospace;
 }
 
 select {
-  background-color: white;
-  font-family: monospace;
+  background-color: var(--select-bg-color);
 }
 
 select option {
@@ -54,19 +52,18 @@ input:focus, select:focus, textarea:focus {
 }
 
 .submit {
-  background: #007bff;
-  color: white;
+  background: var(--submit-btn-bg-color);
+  color: var(--submit-btn-font-color);
   padding: 0.6rem 1.2rem;
   font-weight: bold;
   border: none;
-  font-family: monospace;
   border-radius: 4px;
   cursor: pointer;
 }
 
 .cancel {
   font-family: monospace;
-  background: #f54848;
+  background: var(--cancel-btn-bg-color);
   color: white;
   font-weight: bold;
   padding: 0.6rem 1.2rem;

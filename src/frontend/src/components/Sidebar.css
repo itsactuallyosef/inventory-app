@@ -1,9 +1,13 @@
+
 .sidebar {
-  width: 200px;
-  padding: 2rem 1rem;
-  background: white;
-  border-right: 1px solid #eee;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  border-radius: 10px;
+  background: var(--sidebar-bg-color);
+  border: 1px solid #5e5e5e17;
   z-index: 99;
+  margin: 10px;
 }
 
 .sidebar nav ul {
@@ -18,16 +22,17 @@
 
 .sidebar nav a {
   display: block;
-  padding: 0.6rem 1rem;
-  border-radius: 12px;
+  padding: 0.5rem 0.7rem;
+  border-radius: 13px;
   text-decoration: none;
-  color: #111;
+  color: var(--sidebar-icons-color);
   font-weight: 500;
+  font-size: var(--sidebar-icon-size);
   transition: background 0.2s ease, color 0.2s ease;
 }
 
 .sidebar nav a.active {
-  background: rgba(66, 133, 244, 0.1); /* light blue background */
-  color: #4285f4; /* blue text */
+  background: var(--sidebar-active-bg-color); /* light blue background */
+  color: var(--sidebar-active-font-color); /* blue text */
   font-weight: 600;
 }

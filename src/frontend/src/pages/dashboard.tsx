@@ -1,20 +1,24 @@
 import { useEffect, useState } from "react";
-import productsAPI, { type Product } from "../api/productsAPI";
+import productsAPI from "../api/productsAPI";
+import type { Product } from "../types/Product";
 import InfoCard from "../components/InfoCard";
 import Layout from "../layouts/Layout";
 import styles from "../style/dashboard.module.css"
 import { FaBox, FaExclamationTriangle, FaReceipt } from "react-icons/fa";
 import TransactionTable from "../components/transactionTable";
 import transactionsAPI from "../api/transactionsAPI";
-import type { Invoice } from "../api/invoicesAPI";
+import type { Invoice } from "../types/Invoice";
 import invoicesAPI from "../api/invoicesAPI";
 import type { Transaction } from "../types/Transaction";
+import Button from "../components/Button";
+import ThemeController from "../util/ThemeController";
 
 export default function Dashboard() {
   const [productsNumber, setProductsNumber] = useState<number | string>(0)
   const [lowStocks, setLowStocks] = useState<number | string>(0)
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [invoices, setInvoices] = useState<Invoice[]>([])
+  const [theme, setTheme] = useState("light");
 
 
   async function fetchProducts() {
@@ -47,7 +51,11 @@ export default function Dashboard() {
   }, []);
 
   return (
-    <Layout title="Dashboard" button>
+    <Layout title="Dashboard" button={<Button onClick={()=>{
+      ThemeController.toggleTheme()
+      setTheme(ThemeController.getTheme() === "light" ? "dark" : "light")
+    }}>{theme.toUpperCase()}</Button>}>
+
       <h3 className={styles.hsection}>Overview</h3>
        <div style={{ display: "flex", gap: "2rem" }}>
         <InfoCard icon={<FaBox />} title="Total Products" value={productsNumber} />

@@ -1,6 +1,8 @@
 import styles from "./Table.module.css";
 import type { Product } from "../types/Product"
 import { useState } from "react";
+import Button from "../components/Button"
+import { FaTrash } from "react-icons/fa";
 
 function ProductRow({
   product,
@@ -20,19 +22,7 @@ function ProductRow({
       <td>{product.category}</td>
       <td>{product.supplier}</td>
       <td>
-        <button
-          style={{
-            background: "#ff4d4f",
-            color: "white",
-            border: "none",
-            padding: "4px 8px",
-            borderRadius: "4px",
-            cursor: "pointer",
-          }}
-          onClick={() => onDelete(product._id)}
-        >
-          Delete
-        </button>
+          <Button onClick={() => onDelete(product._id)} variant="danger"><FaTrash/></Button>
       </td>
     </tr>
   );
